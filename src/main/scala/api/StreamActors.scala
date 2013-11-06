@@ -27,7 +27,36 @@ class StatusStream(responder: ActorRef) extends Actor with ActorLogging {
       context.stop(self)
 
     case Tweet(status) =>
-      responder ! MessageChunk(status.get.toString)
+      if (status.get.getGeoLocation != null)
+        responder ! MessageChunk(status.get.toString)
+
+    case ev: Http.ConnectionClosed =>
+      log.debug("Connection closed")
+      context.stop(self)
+
+  }
+
+}
+
+class TweetGeoStream(responder: ActorRef) extends Actor with ActorLogging {
+
+  private val header = (1 to 1024).map(_ => "\uFEFF").mkString("")
+
+  responder ! ChunkedResponseStart(
+    HttpResponse(entity = HttpEntity(ContentType(`application/json`, HttpCharsets.`UTF-8`), header)))
+
+  override def preStart = {
+    context.system.eventStream.subscribe(context.self, classOf[Tweet])
+  }
+
+  def receive = {
+    case Tweet(None) =>
+      responder ! ChunkedMessageEnd()
+      context.stop(self)
+
+    case Tweet(status) =>
+      if (status.get.getGeoLocation != null)
+        responder ! MessageChunk(status.get.toString)
 
     case ev: Http.ConnectionClosed =>
       log.debug("Connection closed")

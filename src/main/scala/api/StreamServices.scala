@@ -10,10 +10,15 @@ class StatusStreamService(system: ActorSystem)(implicit ec: ExecutionContext) ex
 
   val route = {
     path("stream") {
-      post { request =>
+      get { request =>
         system.actorOf(Props(new StatusStream(request.responder)))
       }
-    }
+    } ~
+      path("geostream") {
+        get { request =>
+          system.actorOf(Props(new TweetGeoStream(request.responder)))
+        }
+      }
   }
 
 }

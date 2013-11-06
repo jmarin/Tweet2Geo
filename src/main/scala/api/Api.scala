@@ -10,8 +10,8 @@ trait Api extends RouteConcatenation {
   private implicit val _ = system.dispatcher
 
   val routes =
-    new TweetStreamService(system.actorSelection("/user/master")).route //~
-  //      new StatusStreamService(system).route
+    new TweetStreamService(system.actorSelection("/user/master")).route ~
+      new StatusStreamService(system).route
 
   val rootService = system.actorOf(Props(new services(routes)), "rootService")
 }
