@@ -24,7 +24,7 @@ libraryDependencies ++= {
   val sprayVersion = "1.2-RC1"
   val sprayJsonVersion = "1.2.5"
   Seq(
-    "org.twitter4J" % "twitter4j-stream" % twitter4jVersion,
+    "org.twitter4j" % "twitter4j-stream" % twitter4jVersion,
     "com.typesafe.akka" %% "akka-actor" % akkaVersion,
     "com.typesafe.akka" %% "akka-cluster" % akkaVersion,
     "io.spray" % "spray-can" % sprayVersion,
